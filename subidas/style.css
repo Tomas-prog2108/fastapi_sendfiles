@@ -1,0 +1,197 @@
+
+
+/* 1. Variables: la paleta vive en un solo lugar */
+:root {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --text: #1f2933;
+    --text-muted: #6b7785;
+    --border: #e1e5ea;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --radius: 10px;
+    --shadow: 0 1px 3px rgb(0 0 0 / .08);
+    color-scheme: light dark;
+}
+
+/* Modo oscuro automático según el sistema del usuario */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #12161c;
+        --surface: #1b212a;
+        --text: #e6e9ee;
+        --text-muted: #8b96a5;
+        --border: #2b333f;
+        --accent: #4f8cff;
+        --accent-hover: #6b9dff;
+        --shadow: 0 1px 3px rgb(0 0 0 / .4);
+    }
+}
+
+/* 2. Base */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height: 1.5;
+    color: var(--text);
+    background: var(--bg);
+    max-width: 40rem;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+h1 {
+    font-size: 1.75rem;
+    margin-bottom: 1.25rem;
+}
+
+h2 {
+    font-size: 1.1rem;
+    margin: 2rem 0 .75rem;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+/* 3. Formulario */
+form {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+input[type="file"] {
+    flex: 1;
+    min-width: 0; /* permite que el input se encoja dentro del flex */
+    font-size: .9rem;
+    color: var(--text-muted);
+}
+
+/* Botón interno del input de archivo */
+input[type="file"]::file-selector-button {
+    margin-right: .75rem;
+    padding: .45rem .9rem;
+    font: inherit;
+    color: var(--text);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color .15s;
+}
+
+input[type="file"]::file-selector-button:hover {
+    border-color: var(--accent);
+}
+
+/* Botón principal */
+button[type="submit"] {
+    padding: .5rem 1.1rem;
+    font: inherit;
+    font-weight: 600;
+    color: #fff;
+    background: var(--accent);
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background .15s, opacity .15s;
+}
+
+button[type="submit"]:hover {
+    background: var(--accent-hover);
+}
+
+button[type="submit"]:focus-visible,
+input[type="file"]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+/* htmx añade .htmx-request al formulario mientras se envía */
+form.htmx-request button[type="submit"] {
+    opacity: .6;
+    pointer-events: none;
+    cursor: progress;
+}
+
+/* 4. Lista de archivos (el fragmento que htmx reemplaza) */
+#archivos ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: .5rem;
+}
+
+#archivos li {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 1rem;
+    padding: .7rem 1rem;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    animation: aparecer .25s ease-out;
+    transition: border-color .15s;
+}
+
+#archivos li:hover {
+    border-color: var(--accent);
+}
+
+#archivos a {
+    color: var(--accent);
+    text-decoration: none;
+    font-weight: 500;
+    overflow-wrap: anywhere; /* nombres largos no rompen el diseño */
+}
+
+#archivos a:hover {
+    text-decoration: underline;
+}
+
+#archivos small {
+    flex-shrink: 0;
+    color: var(--text-muted);
+}
+
+/* Mensaje de "no hay archivos" */
+#archivos > p {
+    padding: 1.5rem;
+    text-align: center;
+    color: var(--text-muted);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+}
+
+@keyframes aparecer {
+    from { opacity: 0; transform: translateY(-4px); }
+    to   { opacity: 1; transform: none; }
+}
+
+/* 5. Pantallas pequeñas */
+@media (max-width: 30rem) {
+    form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
+/* Respeta a quien prefiere menos animaciones */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+    }
+}
